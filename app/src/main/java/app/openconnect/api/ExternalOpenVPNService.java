@@ -27,40 +27,28 @@ public class ExternalOpenVPNService extends Service {
     private UpdateMessage mMostRecentState;
     private OpenVpnService mService;
     public final RemoteCallbackList<IOpenVPNStatusCallback> mCallbacks = new RemoteCallbackList<>();
-    private ServiceConnection mConnection = new ServiceConnection(this) { // from class: app.openconnect.api.ExternalOpenVPNService.1
-        public final ExternalOpenVPNService this$0;
-
-        {
-            this.this$0 = this;
-        }
-
+    private final ServiceConnection mConnection = new ServiceConnection() { // from class: app.openconnect.api.ExternalOpenVPNService.1
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            this.this$0.mService = ((OpenVpnService.LocalBinder) iBinder).getService();
+            mService = ((OpenVpnService.LocalBinder) iBinder).getService();
         }
 
         @Override // android.content.ServiceConnection
         public void onServiceDisconnected(ComponentName componentName) {
-            this.this$0.mService = null;
+            mService = null;
         }
     };
-    private final IOpenVPNAPIService.Stub mBinder = new IOpenVPNAPIService.Stub(this) { // from class: app.openconnect.api.ExternalOpenVPNService.2
-        public final ExternalOpenVPNService this$0;
-
-        {
-            this.this$0 = this;
-        }
-
+    private final IOpenVPNAPIService.Stub mBinder = new IOpenVPNAPIService.Stub() { // from class: app.openconnect.api.ExternalOpenVPNService.2
         private void checkOpenVPNPermission() {
-            PackageManager packageManager = this.this$0.getPackageManager();
-            for (String str : this.this$0.mExtAppDb.getExtAppList()) {
+            PackageManager packageManager = getPackageManager();
+            for (String str : mExtAppDb.getExtAppList()) {
                 try {
+                    if (Binder.getCallingUid() == packageManager.getApplicationInfo(str, 0).uid) {
+                        return;
+                    }
                 } catch (PackageManager.NameNotFoundException e8) {
-                    this.this$0.mExtAppDb.removeApp(str);
+                    mExtAppDb.removeApp(str);
                     e8.printStackTrace();
-                }
-                if (Binder.getCallingUid() == packageManager.getApplicationInfo(str, 0).uid) {
-                    return;
                 }
             }
             throw new SecurityException("Unauthorized OpenVPN API Caller");
@@ -75,8 +63,8 @@ public class ExternalOpenVPNService extends Service {
         @Override // app.openconnect.api.IOpenVPNAPIService
         public void disconnect() {
             checkOpenVPNPermission();
-            if (this.this$0.mService != null) {
-                this.this$0.mService.stopVPN();
+            if (mService != null) {
+                mService.stopVPN();
             }
         }
 
@@ -92,29 +80,29 @@ public class ExternalOpenVPNService extends Service {
 
         @Override // app.openconnect.api.IOpenVPNAPIService
         public Intent prepare(String str) {
-            if (new ExternalAppDatabase(this.this$0).isAllowed(str)) {
+            if (new ExternalAppDatabase(ExternalOpenVPNService.this).isAllowed(str)) {
                 return null;
             }
             Intent intent = new Intent();
-            intent.setClass(this.this$0, ConfirmDialog.class);
+            intent.setClass(ExternalOpenVPNService.this, ConfirmDialog.class);
             return intent;
         }
 
         @Override // app.openconnect.api.IOpenVPNAPIService
         public Intent prepareVPNService() {
             checkOpenVPNPermission();
-            if (VpnService.prepare(this.this$0) == null) {
+            if (VpnService.prepare(ExternalOpenVPNService.this) == null) {
                 return null;
             }
-            return new Intent(this.this$0.getBaseContext(), (Class<?>) GrantPermissionsActivity.class);
+            return new Intent(ExternalOpenVPNService.this.getBaseContext(), (Class<?>) GrantPermissionsActivity.class);
         }
 
         @Override // app.openconnect.api.IOpenVPNAPIService
         public void registerStatusCallback(IOpenVPNStatusCallback iOpenVPNStatusCallback) {
             checkOpenVPNPermission();
             if (iOpenVPNStatusCallback != null) {
-                iOpenVPNStatusCallback.newStatus(this.this$0.mMostRecentState.vpnUUID, this.this$0.mMostRecentState.state, this.this$0.mMostRecentState.logmessage, this.this$0.mMostRecentState.level.name());
-                this.this$0.mCallbacks.register(iOpenVPNStatusCallback);
+                iOpenVPNStatusCallback.newStatus(ExternalOpenVPNService.this.mMostRecentState.vpnUUID, ExternalOpenVPNService.this.mMostRecentState.state, ExternalOpenVPNService.this.mMostRecentState.logmessage, ExternalOpenVPNService.this.mMostRecentState.level.name());
+                ExternalOpenVPNService.this.mCallbacks.register(iOpenVPNStatusCallback);
             }
         }
 
@@ -132,7 +120,7 @@ public class ExternalOpenVPNService extends Service {
         public void unregisterStatusCallback(IOpenVPNStatusCallback iOpenVPNStatusCallback) {
             checkOpenVPNPermission();
             if (iOpenVPNStatusCallback != null) {
-                this.this$0.mCallbacks.unregister(iOpenVPNStatusCallback);
+                ExternalOpenVPNService.this.mCallbacks.unregister(iOpenVPNStatusCallback);
             }
         }
     };
@@ -220,11 +208,11 @@ public class ExternalOpenVPNService extends Service {
         public OpenVPN.ConnectionStatus level;
         public String logmessage;
         public String state;
-        public final ExternalOpenVPNService this$0;
+        public final ExternalOpenVPNService itsme;
         public String vpnUUID;
 
         public UpdateMessage(ExternalOpenVPNService externalOpenVPNService, String str, String str2, OpenVPN.ConnectionStatus connectionStatus) {
-            this.this$0 = externalOpenVPNService;
+            this.itsme = externalOpenVPNService;
             this.state = str;
             this.logmessage = str2;
             this.level = connectionStatus;

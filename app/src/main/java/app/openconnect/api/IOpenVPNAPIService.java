@@ -5,6 +5,9 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.RemoteException;
+
 import app.openconnect.api.IOpenVPNStatusCallback;
 import java.util.List;
 
@@ -100,6 +103,8 @@ public interface IOpenVPNAPIService extends IInterface {
                     obtain2.recycle();
                     obtain.recycle();
                     return z7;
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
                 } finally {
                     obtain2.recycle();
                     obtain.recycle();
@@ -122,6 +127,8 @@ public interface IOpenVPNAPIService extends IInterface {
                     } else {
                         Stub.getDefaultImpl().disconnect();
                     }
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
                 } finally {
                     obtain2.recycle();
                     obtain.recycle();
@@ -138,8 +145,12 @@ public interface IOpenVPNAPIService extends IInterface {
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(1, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
-                        return Stub.getDefaultImpl().getProfiles();
+                    try {
+                        if (!this.mRemote.transact(1, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
+                            return Stub.getDefaultImpl().getProfiles();
+                        }
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
                     }
                     obtain2.readException();
                     return obtain2.createTypedArrayList(APIVpnProfile.CREATOR);
@@ -156,8 +167,12 @@ public interface IOpenVPNAPIService extends IInterface {
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeString(str);
-                    if (!this.mRemote.transact(5, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
-                        return Stub.getDefaultImpl().prepare(str);
+                    try {
+                        if (!this.mRemote.transact(5, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
+                            return Stub.getDefaultImpl().prepare(str);
+                        }
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
                     }
                     obtain2.readException();
                     Intent intent = obtain2.readInt() != 0 ? (Intent) Intent.CREATOR.createFromParcel(obtain2) : null;
@@ -176,8 +191,12 @@ public interface IOpenVPNAPIService extends IInterface {
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(6, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
-                        return Stub.getDefaultImpl().prepareVPNService();
+                    try {
+                        if (!this.mRemote.transact(6, obtain, obtain2, 0) && Stub.getDefaultImpl() != null) {
+                            return Stub.getDefaultImpl().prepareVPNService();
+                        }
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
                     }
                     obtain2.readException();
                     Intent intent = obtain2.readInt() != 0 ? (Intent) Intent.CREATOR.createFromParcel(obtain2) : null;
@@ -197,10 +216,14 @@ public interface IOpenVPNAPIService extends IInterface {
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeStrongBinder(iOpenVPNStatusCallback != null ? iOpenVPNStatusCallback.asBinder() : null);
-                    if (this.mRemote.transact(8, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
-                        obtain2.readException();
-                    } else {
-                        Stub.getDefaultImpl().registerStatusCallback(iOpenVPNStatusCallback);
+                    try {
+                        if (this.mRemote.transact(8, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
+                            obtain2.readException();
+                        } else {
+                            Stub.getDefaultImpl().registerStatusCallback(iOpenVPNStatusCallback);
+                        }
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
                     }
                 } finally {
                     obtain2.recycle();
@@ -215,10 +238,14 @@ public interface IOpenVPNAPIService extends IInterface {
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeString(str);
-                    if (this.mRemote.transact(2, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
-                        obtain2.readException();
-                    } else {
-                        Stub.getDefaultImpl().startProfile(str);
+                    try {
+                        if (this.mRemote.transact(2, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
+                            obtain2.readException();
+                        } else {
+                            Stub.getDefaultImpl().startProfile(str);
+                        }
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
                     }
                 } finally {
                     obtain2.recycle();
@@ -238,6 +265,8 @@ public interface IOpenVPNAPIService extends IInterface {
                     } else {
                         Stub.getDefaultImpl().startVPN(str);
                     }
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
                 } finally {
                     obtain2.recycle();
                     obtain.recycle();
@@ -251,10 +280,14 @@ public interface IOpenVPNAPIService extends IInterface {
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeStrongBinder(iOpenVPNStatusCallback != null ? iOpenVPNStatusCallback.asBinder() : null);
-                    if (this.mRemote.transact(9, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
-                        obtain2.readException();
-                    } else {
-                        Stub.getDefaultImpl().unregisterStatusCallback(iOpenVPNStatusCallback);
+                    try {
+                        if (this.mRemote.transact(9, obtain, obtain2, 0) || Stub.getDefaultImpl() == null) {
+                            obtain2.readException();
+                        } else {
+                            Stub.getDefaultImpl().unregisterStatusCallback(iOpenVPNStatusCallback);
+                        }
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
                     }
                 } finally {
                     obtain2.recycle();
@@ -333,7 +366,7 @@ public interface IOpenVPNAPIService extends IInterface {
                         return true;
                     }
                     parcel2.writeInt(1);
-                    prepare.writeToParcel(parcel2, 1);
+                    prepare.writeToParcel(parcel2, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
                     return true;
                 case 6:
                     parcel.enforceInterface(DESCRIPTOR);
@@ -344,7 +377,7 @@ public interface IOpenVPNAPIService extends IInterface {
                         return true;
                     }
                     parcel2.writeInt(1);
-                    prepareVPNService.writeToParcel(parcel2, 1);
+                    prepareVPNService.writeToParcel(parcel2, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
                     return true;
                 case 7:
                     parcel.enforceInterface(DESCRIPTOR);
@@ -362,7 +395,11 @@ public interface IOpenVPNAPIService extends IInterface {
                     parcel2.writeNoException();
                     return true;
                 default:
-                    return super.onTransact(i7, parcel, parcel2, i8);
+                    try {
+                        return super.onTransact(i7, parcel, parcel2, i8);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
             }
         }
     }

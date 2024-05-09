@@ -28,12 +28,12 @@ import java.util.regex.Pattern;
 import org.infradead.libopenconnect.LibOpenConnect;
 import org.strongswan.android.data.VpnProfileDataSource;
 import org.xbill.DNS.TSIG;
-import q.g;
-import r.i;
-import s2.b;
-import s2.c;
-import x2.d;
-import x2.e;
+//import q.g;
+//import r.i;
+//import s2.b;
+//import s2.c;
+//import x2.d;
+//import x2.e;
 
 /* loaded from: TehShop-dex2jar.jar:app/openconnect/core/OpenConnectManagementThread.class */
 public class OpenConnectManagementThread implements Runnable, OpenVPNManagement {
@@ -270,7 +270,7 @@ public class OpenConnectManagementThread implements Runnable, OpenVPNManagement 
             sb.append(this.mFilesDir);
             sb.append("/run_pie ");
             writeCertOrScript(this.mFilesDir + "/curl", "#!/system/bin/sh\nexec " + BuildConfig.FLAVOR + str + " \"$@\"\n", true);
-        } catch (IOException e8) {
+        } catch (Exception e8) {
             log("Error writing curl wrapper scripts");
         }
     }

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 
+import sp.openconnecttest.R;
+
 /* loaded from: TehShop-dex2jar.jar:app/openconnect/core/CertWarningDialog.class */
 public class CertWarningDialog extends UserDialog implements DialogInterface.OnClickListener, DialogInterface.OnDismissListener {
     public static final int RESULT_ALWAYS = 2;
@@ -51,7 +53,14 @@ public class CertWarningDialog extends UserDialog implements DialogInterface.OnC
     @Override // app.openconnect.core.UserDialog
     public void onStart(Context context) {
         super.onStart(context);
-        AlertDialog create = new AlertDialog.Builder(context).setTitle(2131755127).setMessage(context.getString(2131755126, this.mHostname, this.mReason, this.mCertSHA1)).setPositiveButton(2131755124, this).setNeutralButton(2131755125, this).setNegativeButton(2131755508, this).create();
+        AlertDialog create =
+                new AlertDialog.Builder(context).setTitle("CERT WARNING")
+                        .setMessage(
+                                context.getString("THIS IS MSG", this.mHostname,
+                                        this.mReason, this.mCertSHA1))
+                        .setPositiveButton(R.string.app_name, this)
+                        .setNeutralButton(R.string.app_name, this)
+                        .setNegativeButton(R.string.app_name, this).create();
         this.mAlert = create;
         create.setOnDismissListener(this);
         this.mAlert.show();

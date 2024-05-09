@@ -6,8 +6,8 @@ import android.net.VpnService;
 import android.os.Bundle;
 import android.util.Log;
 import app.openconnect.core.OpenVpnService;
-import v6.a;
-import v6.b;
+//import v6.a;
+//import v6.b;
 
 /* loaded from: TehShop-dex2jar.jar:app/openconnect/api/GrantPermissionsActivity.class */
 public class GrantPermissionsActivity extends Activity {
@@ -17,14 +17,14 @@ public class GrantPermissionsActivity extends Activity {
     private String mUUID;
 
     private void reportBadRom(Exception exc) {
-        if (a.f6485a == null) {
-            Log.w("a", "Calling ACRA.getConfig() before ACRA.init() gives you an empty configuration instance. You might prefer calling ACRA.getNewDefaultConfig(Application) to get an instance with default values taken from a @ReportsCrashes annotation.");
-            a.f6485a = new b(null);
-        }
-        b bVar = a.f6485a;
-        bVar.getClass();
-        a.f6485a = bVar;
-        throw new IllegalStateException("Cannot access ErrorReporter before ACRA#init");
+//        if (a.f6485a == null) {
+//            Log.w("a", "Calling ACRA.getConfig() before ACRA.init() gives you an empty configuration instance. You might prefer calling ACRA.getNewDefaultConfig(Application) to get an instance with default values taken from a @ReportsCrashes annotation.");
+//            a.f6485a = new b(null);
+//        }
+//        b bVar = a.f6485a;
+//        bVar.getClass();
+//        a.f6485a = bVar;
+//        throw new IllegalStateException("Cannot access ErrorReporter before ACRA#init");
     }
 
     @Override // android.app.Activity

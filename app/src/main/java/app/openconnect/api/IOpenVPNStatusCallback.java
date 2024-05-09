@@ -4,6 +4,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.RemoteException;
 
 /* loaded from: TehShop-dex2jar.jar:app/openconnect/api/IOpenVPNStatusCallback.class */
 public interface IOpenVPNStatusCallback extends IInterface {
@@ -52,8 +53,12 @@ public interface IOpenVPNStatusCallback extends IInterface {
                     obtain.writeString(str2);
                     obtain.writeString(str3);
                     obtain.writeString(str4);
-                    if (this.mRemote.transact(1, obtain, null, 1) || Stub.getDefaultImpl() == null) {
-                        return;
+                    try {
+                        if (this.mRemote.transact(1, obtain, null, 1) || Stub.getDefaultImpl() == null) {
+                            return;
+                        }
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
                     }
                     Stub.getDefaultImpl().newStatus(str, str2, str3, str4);
                 } finally {
@@ -102,7 +107,11 @@ public interface IOpenVPNStatusCallback extends IInterface {
                 return true;
             }
             if (i7 != 1598968902) {
-                return super.onTransact(i7, parcel, parcel2, i8);
+                try {
+                    return super.onTransact(i7, parcel, parcel2, i8);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
             parcel2.writeString(DESCRIPTOR);
             return true;
